@@ -210,26 +210,20 @@ nav a:hover, nav a.active-link { color: var(--accent); }
 
 /* LAYOUT */
 main { max-width: 1100px; margin: 110px auto 40px; padding: 0 20px; }
-section { scroll-margin-top: 80px; margin-bottom: 80px; }
+section { scroll-margin-top: 80px; margin-bottom: 80px; transition: box-shadow 0.6s ease; }
+section.highlight {
+  box-shadow: 0 0 30px var(--glow), 0 0 60px var(--glow);
+  border-radius: 16px;
+}
 .section-title {
   font-size: 32px;
-  color: var(--accent);
+  color: var(--text);
   text-align: center;
   margin-bottom: 40px;
-  position: relative;
 }
 .section-title span {
   position: relative;
   display: inline-block;
-}
-.section-title span::after {
-  content: '';
-  position: absolute;
-  bottom: -8px;
-  left: 0;
-  width: 100%;
-  height: 3px;
-  background: linear-gradient(90deg, transparent, var(--accent), transparent);
 }
 
 /* CARDS */
@@ -240,11 +234,12 @@ section { scroll-margin-top: 80px; margin-bottom: 80px; }
   box-shadow: var(--shadow);
   position: relative;
   overflow: hidden;
-  transition: transform 0.3s, box-shadow 0.3s;
+  border: 2px solid rgba(11,102,255,0.1);
+  transition: transform 0.3s, border-color 0.3s;
 }
 .card-section:hover {
   transform: translateY(-5px);
-  box-shadow: 0 12px 28px var(--glow);
+  border-color: var(--accent);
 }
 
 /* Geometric decorations */
@@ -259,7 +254,8 @@ section { scroll-margin-top: 80px; margin-bottom: 80px; }
   right: 20px;
   transition: transform 0.5s;
 }
-.card-section:hover .geometric-box {
+.card-section:hover .geometric-box,
+.card:hover .geometric-box {
   transform: rotate(225deg);
 }
 
@@ -274,13 +270,29 @@ section { scroll-margin-top: 80px; margin-bottom: 80px; }
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  min-height: 50px;
 }
 .hero-card .subtitle {
   font-size: 18px;
   font-weight: 600;
   color: var(--accent);
   margin-bottom: 20px;
+  min-height: 30px;
 }
+
+/* Typewriter effect */
+.typewriter-text {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  animation: typing 2s steps(30, end);
+}
+
+@keyframes typing {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
 .hero-card p { 
   font-size: 16px;
   line-height: 1.8;
@@ -366,7 +378,7 @@ section { scroll-margin-top: 80px; margin-bottom: 80px; }
   padding: 20px;
 }
 .project-content h3 {
-  color: var(--accent);
+  <!-- color: var(--accent); -->
   margin-bottom: 10px;
   font-size: 20px;
 }
@@ -425,7 +437,7 @@ section { scroll-margin-top: 80px; margin-bottom: 80px; }
 
 .tools-section h3 {
   text-align: center;
-  color: var(--accent);
+   color: var(--text);
   margin: 30px 0 20px;
   font-size: 24px;
 }
@@ -440,22 +452,22 @@ section { scroll-margin-top: 80px; margin-bottom: 80px; }
   background: var(--card);
   padding: 25px;
   border-radius: 12px;
-  border: 1px solid rgba(11,102,255,0.1);
+  border: 2px solid rgba(11,102,255,0.1);
   transition: all 0.3s;
   position: relative;
+  overflow: hidden;
 }
 .card:hover {
   transform: translateY(-5px);
-  box-shadow: var(--shadow);
   border-color: var(--accent);
 }
 .card h3, .card h4 {
-  color: var(--accent);
+  <!-- color: var(--accent); -->
   margin-bottom: 10px;
 }
 .card strong {
-  color: var(--accent);
-}
+<!--   color: var(--accent);
+ -->}
 
 /* CONTACT */
 .contact-methods {
@@ -529,7 +541,7 @@ footer {
   <div class="nav">
     <div class="brand">
       <div class="brand-circle">M</div>
-      <span>Mohammed Aqeel Ismail</span>
+      <span>Mohammed Aqeel</span>
     </div>
     <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">☰</button>
     <nav id="mainNav">
@@ -554,8 +566,8 @@ footer {
 <section class="section" id="about">
   <div class="card-section hero-card">
     <div class="geometric-box"></div>
-    <h1>Mohammed Aqeel Ismail</h1>
-    <p class="subtitle">Aspiring Software Developer</p>
+    <h1 id="typewriter-name"></h1>
+    <p class="subtitle" id="typewriter-subtitle"></p>
     <p><strong>BSc Computer Science & Information Technology</strong> | <strong>BSc (Hons) Computer Science</strong></p>
     <p style="color:var(--muted); margin-top: 20px;">
       I am a BSc Computer Science and IT graduate and currently an Honours student at the University of KwaZulu-Natal. 
@@ -730,7 +742,7 @@ footer {
   <div class="card-section">
     <div class="geometric-box"></div>
     <p style="text-align: center; color: var(--muted); margin-bottom: 30px;">
-      I'm always open to discussing new opportunities, collaborations, or just connecting with fellow developers. Feel free to reach out through any of the ways below.
+      I'm always open to discussing new opportunities, collaborations, or just connecting with fellow developers. Feel free to reach out through any of the channels below.
     </p>
     
     <div class="contact-methods">
@@ -784,6 +796,32 @@ footer {
 
 <script>
 (function(){
+  // Typewriter effect
+  function typeWriter(element, text, speed, callback) {
+    let i = 0;
+    
+    function typeChar() {
+      if (i < text.length) {
+        element.textContent += text.charAt(i);
+        i++;
+        setTimeout(typeChar, speed);
+      } else if (callback) {
+        setTimeout(callback, 800);
+      }
+    }
+    typeChar();
+  }
+
+  // Initialize typewriter on page load
+  window.addEventListener('load', () => {
+    const nameElement = document.getElementById('typewriter-name');
+    const subtitleElement = document.getElementById('typewriter-subtitle');
+    
+    typeWriter(nameElement, 'Mohammed Aqeel Ismail', 100, () => {
+      typeWriter(subtitleElement, 'Aspiring Software Developer', 80);
+    });
+  });
+
   // Theme toggle
   const btn = document.getElementById('themeToggle');
   const root = document.documentElement;
@@ -835,10 +873,25 @@ footer {
     a.addEventListener('click',e=>{
       e.preventDefault();
       const id=a.getAttribute('href').slice(1);
-      const el=document.getElementById(id);
       nav.classList.remove('open');
+      
+      // Handle scroll to top
+      if(id === '' || id === 'top') {
+        window.scrollTo({top: 0, behavior: 'smooth'});
+        return;
+      }
+      
+      const el=document.getElementById(id);
       if(el){
         el.scrollIntoView({behavior:'smooth'});
+        
+        // Add glow effect
+        setTimeout(() => {
+          el.classList.add('highlight');
+          setTimeout(() => {
+            el.classList.remove('highlight');
+          }, 1500);
+        }, 500);
       }
     });
   });
@@ -851,28 +904,7 @@ footer {
   }
   window.addEventListener('scroll', scrollUp);
 
-  // Header hide on scroll down
-  let lastScroll = 0;
-  const header = document.querySelector('header');
-  
-  window.addEventListener('scroll', () => {
-    const currentScroll = window.pageYOffset;
-    
-    if(currentScroll <= 0) {
-      header.style.transform = 'translateY(0)';
-      return;
-    }
-    
-    if(currentScroll > lastScroll && currentScroll > 80) {
-      // Scroll down
-      header.style.transform = 'translateY(-100%)';
-    } else {
-      // Scroll up
-      header.style.transform = 'translateY(0)';
-    }
-    
-    lastScroll = currentScroll;
-  });
+  // Header stays visible - no hiding on scroll
 
   // Scroll reveal animation
   const sr = {
